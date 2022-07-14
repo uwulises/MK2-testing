@@ -1,7 +1,7 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath('..'))
-from serial.serial_control import SerialControl
+from serial_control.serial_control import SerialControl
 from numpy import genfromtxt
 import time
 robot = SerialControl(port="COM4")
