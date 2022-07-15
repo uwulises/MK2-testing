@@ -1,11 +1,12 @@
-import pandas as pd
-import numpy as np
-from serial_control.serial_control import SerialControl
 import sys
 import os
+import pandas as pd
+import numpy as np
+sys.path.insert(0, os.path.abspath('..'))
+from serial_control.serial_control import SerialControl
 from pynput.keyboard import Key, Listener, KeyCode
 import time
-sys.path.insert(0, os.path.abspath('..'))
+
 
 
 robot = SerialControl(port="COM4")
@@ -13,18 +14,39 @@ robot.open_serial()
 L0ang = 90
 L1ang = 90
 L2ang = 90
+Mgrip_val = 0
 L0_list = np.array([], dtype='i')
 L1_list = np.array([], dtype='i')
 L2_list = np.array([], dtype='i')
+Mgrip_list = np.array([], dtype='i')
+
+def Mgrip(val):
+    global L0ang
+    global L1ang
+    global L2ang
+    global Mgrip_val
+    global L0_list
+    global L1_list
+    global L2_list
+    global Mgrip_list
+    robot.gripper_iman(val)
+    Mgrip_val = val
+    L0_list = np.append(L0_list, L0ang*0.5)
+    L1_list = np.append(L1_list, L1ang)
+    L2_list = np.append(L2_list, L2ang)
+    Mgrip_list = np.append(Mgrip_list, Mgrip_val)
+
 
 
 def L0(val0):
     global L0ang
     global L1ang
     global L2ang
+    global Mgrip_val
     global L0_list
     global L1_list
     global L2_list
+    global Mgrip_list
     if val0 > 0:
         L0ang += 2
     else:
@@ -34,15 +56,18 @@ def L0(val0):
     L0_list = np.append(L0_list, L0ang*0.5)
     L1_list = np.append(L1_list, L1ang)
     L2_list = np.append(L2_list, L2ang)
+    Mgrip_list = np.append(Mgrip_list, Mgrip_val)
 
 
 def L1(val1):
     global L0ang
     global L1ang
     global L2ang
+    global Mgrip_val
     global L0_list
     global L1_list
     global L2_list
+    global Mgrip_list
     if val1 > 0:
         L1ang += 1
     else:
@@ -53,15 +78,18 @@ def L1(val1):
     L1_list = np.append(L1_list, L1ang)
     L0_list = np.append(L0_list, L0ang*0.5)
     L2_list = np.append(L2_list, L2ang)
+    Mgrip_list = np.append(Mgrip_list, Mgrip_val)
 
 
 def L2(val2):
     global L0ang
     global L1ang
     global L2ang
+    global Mgrip_val
     global L0_list
     global L1_list
     global L2_list
+    global Mgrip_list
     if val2 > 0:
         L2ang += 1
     else:
@@ -71,6 +99,7 @@ def L2(val2):
     L2_list = np.append(L2_list, L2ang)
     L1_list = np.append(L1_list, L1ang)
     L0_list = np.append(L0_list, L0ang*0.5)
+    Mgrip_list = np.append(Mgrip_list, Mgrip_val)
 
 
 def on_press(key):
@@ -87,16 +116,20 @@ def on_press(key):
         L2(1)
     if key == KeyCode.from_char('e'):
         L2(-1)
-
+    if key == KeyCode.from_char('c'):
+        Mgrip(1)
+    if key == KeyCode.from_char('v'):
+        Mgrip(0)
 
 def on_release(key):
     global L0_list
     global L1_list
     global L2_list
+    global Mgrip_list
 
     #print('{0} release'.format(key))
     if key == Key.esc:
-        values = np.asarray([L0_list, L1_list, L2_list])
+        values = np.asarray([L0_list, L1_list, L2_list, Mgrip_list])
         np.savetxt('sample.csv', values, delimiter=",")
         # Stop listener
         print('{0} release'.format(key))

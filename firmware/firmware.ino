@@ -36,8 +36,8 @@ void setup()
   eff.attach(pin_eff);
   pinMode(pin_grip, OUTPUT);
   pinMode(pin_belt, OUTPUT);
-  digitalWrite(pin_grip, LOW); // relay init off
-  digitalWrite(pin_belt, LOW); // belt init off
+  digitalWrite(pin_grip, HIGH); // relay init off inverse logic
+  digitalWrite(pin_belt, LOW);  // belt init off
 
   // Homing inicial
   axis_home();
@@ -129,11 +129,13 @@ void move_axis(int servoId, int position)
   {
     if (position == 1)
     {
-      digitalWrite(pin_grip, HIGH);
+      // inverse logic for relay
+      digitalWrite(pin_grip, LOW);
     }
     if (position == 0)
     {
-      digitalWrite(pin_grip, LOW);
+      // inverse logic for relay
+      digitalWrite(pin_grip, HIGH);
     }
   }
   if (servoId == 6)

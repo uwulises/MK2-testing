@@ -50,11 +50,20 @@ class SerialControl:
     def gripper_iman(self, val):
         if val == 1:
             # close gripper
-            self.write_servo(self, 5, 1)
+            self.write_servo(5, 1)
         else:
             # release gripper
-            self.write_servo(self, 5, 0)
+            self.write_servo(5, 0)
 
     def eff_gripper(self, val):
         # write gripper-servo value
         self.write_servo(4, val)
+
+    def home(self):
+        self.write_servo(1, 45)
+        time.sleep(0.1)
+        self.write_servo(2, 90)
+        time.sleep(0.1)
+        self.write_servo(3, 90)
+        time.sleep(0.1)
+        self.gripper_iman(False)
