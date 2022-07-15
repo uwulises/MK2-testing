@@ -34,9 +34,9 @@ def ser_grip(vals):
     global Mgrip_list
     global Ser_grip_list
     if vals > 0:
-        Ser_grip_val += 1
+        Ser_grip_val += 2
     else:
-        Ser_grip_val -= 1
+        Ser_grip_val -= 2
     print(f"grip angle = {Ser_grip_val}")
     robot.eff_gripper(Ser_grip_val)
     L0_list = np.append(L0_list, L0ang*0.5)
