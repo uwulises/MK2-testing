@@ -15,8 +15,10 @@ L0_values = values[0]
 L1_values = values[1]
 L2_values = values[2]
 Mgrip_values = values[3]
+Ser_grip_values = values[4]
 
 for i in range(len(L0_values)):
+    robot.eff_gripper(Ser_grip_values[i])
     robot.gripper_iman(Mgrip_values[i])
     robot.write_servo(1, L0_values[i])
     time.sleep(0.01)

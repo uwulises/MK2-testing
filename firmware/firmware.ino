@@ -84,7 +84,7 @@ void loop()
     }
     if (num > 4000 and num < 4999)
     {
-      int val3 = num - 3000;
+      int val3 = num - 4000;
       move_axis(4, val3);
     }
     if (num == 5001)
@@ -124,6 +124,7 @@ void move_axis(int servoId, int position)
   if (servoId == 4)
   {
     eff.write(position);
+    delay(10);
   }
   if (servoId == 5)
   {
