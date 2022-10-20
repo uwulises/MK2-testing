@@ -9,7 +9,8 @@ import time
 
 
 
-robot = SerialControl(port="COM4")
+robot = SerialControl(port="/dev/tty.wchusbserial14140")
+#robot = SerialControl(port="/dev/tty.HC06")
 robot.open_serial()
 L0ang = 90
 L1ang = 90
