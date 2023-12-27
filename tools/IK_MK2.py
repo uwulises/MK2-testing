@@ -9,14 +9,15 @@ import time
 
 def inverse_kinematics(X=150,Y=0,Z=60):
 
-    zb = Z - 94
+    offset_z = 100
+    zb = Z - offset_z
     l1=135
     l2=147
     l3 = 56
     
     q0 = np.arctan2(Y,X)
 
-    if np.abs(Y)<1e-6:
+    if np.abs(Y)<1e-2:
         xo = X-l3
     else:
         xo = np.sqrt((X-l3*np.cos(q0))**2 + (Y-l3*np.sin(q0))**2)
@@ -32,26 +33,18 @@ def inverse_kinematics(X=150,Y=0,Z=60):
     return q0,q1,q2
 
 
-
-
-
-
 robot = SerialControl(port="COM8")
-
 robot.open_serial()
 
-q0 , q1, q2 = inverse_kinematics(200,0,40)
-time.sleep(1)
-robot.send_command([q0,q1,q2])
-
-q0 , q1, q2 = inverse_kinematics(240,0,40)
-time.sleep(1)
-robot.send_command([q0,q1,q2])
-
-q0 , q1, q2 = inverse_kinematics(290,0,40)
-time.sleep(1)
-robot.send_command([q0,q1,q2])
-
-time.sleep(1)
+for i in range(50):
+    x = 2*i
+    q0,q1,q2 = inverse_kinematics(180+x,0,70)
+    robot.send_command([q0,q1,q2])
+    time.sleep(0.1)
+for i in range(50):
+    x = 100-2*i
+    q0,q1,q2 = inverse_kinematics(180+x,0,70)
+    robot.send_command([q0,q1,q2])
+    time.sleep(0.1)
 robot.home()
 robot.close_serial()
