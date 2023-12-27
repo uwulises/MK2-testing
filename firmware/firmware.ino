@@ -59,48 +59,6 @@ void serialEvent()
     }
   }
 }
-
-void loop()
-{
-  if (stringComplete)
-  {
-    inputString.substring(0, 3);
-    Serial.println(inputString);
-    int num = inputString.toInt();
-    if (num < 1999)
-    {
-      int val0 = num - 1000;
-      move_axis(1, val0);
-    }
-    if (num > 2000 and num < 2999)
-    {
-      int val1 = num - 2000;
-      move_axis(2, val1);
-    }
-    if (num > 3000 and num < 3999)
-    {
-      int val2 = num - 3000;
-      move_axis(3, val2);
-    }
-    if (num > 4000 and num < 4999)
-    {
-      int val3 = num - 4000;
-      move_axis(4, val3);
-    }
-    if (num == 5001)
-    {
-      move_axis(5, 1);
-    }
-    if (num == 5000)
-    {
-      move_axis(5, 0);
-    }
-
-    inputString = "";
-    stringComplete = false;
-  }
-}
-// move_axis function
 void move_axis(int servoId, int position)
 {
   if (servoId == 1)
@@ -121,44 +79,28 @@ void move_axis(int servoId, int position)
     delay(10);
   }
 
-  if (servoId == 4)
+
+}
+void loop()
+{
+   if (stringComplete)
   {
-    eff.write(position);
-    delay(10);
+    // take the 6 first characters of the string
+    // and compare it with "CMDVEL"
+    if (inputString.substring(0, 6) == "MOVEAX")
+    {
+      // take and split the next 6 characters of the string
+      int q0 = inputString.substring(6, 9).toInt();
+      int q1 = inputString.substring(9, 12).toInt();
+      int q2 = inputString.substring(12, 15).toInt();
+      move_axis(1, q0);
+      move_axis(2, q1);
+      move_axis(3, q2);
+
+    inputString = "";
+    stringComplete = false;
   }
-  if (servoId == 5)
-  {
-    if (position == 1)
-    {
-      // inverse logic for relay
-      digitalWrite(pin_grip, LOW);
-    }
-    if (position == 0)
-    {
-      // inverse logic for relay
-      digitalWrite(pin_grip, HIGH);
-    }
-  }
-  if (servoId == 6)
-  {
-    if (position == 1)
-    {
-      digitalWrite(pin_belt, HIGH);
-    }
-    if (position == 0)
-    {
-      digitalWrite(pin_belt, LOW);
-    }
-  }
-  if (servoId == 7)
-  {
-    if (position == 1)
-    {
-      digitalWrite(pin_belt_turn, HIGH); // forward
-    }
-    if (position == 0)
-    {
-      digitalWrite(pin_belt_turn, LOW); // backward
-    }
-  }
+}
+// move_axis function
+
 }
