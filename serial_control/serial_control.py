@@ -24,46 +24,15 @@ class SerialControl:
         time.sleep(0.2)
         self.serial.close()
 
-    def write_servo(self, id, ang):
-        angledata = ang
-        if id == 1:
-            angledata = 2 * angledata
-            self.serial.write((str(angledata+1000) + '\n').encode())
-        elif id == 2:
-            self.serial.write((str(angledata+2000) + '\n').encode())
-        elif id == 3:
-
-            self.serial.write((str(angledata+3000) + '\n').encode())
-        elif id == 4:
-
-            self.serial.write((str(angledata+4000) + '\n').encode())
-        elif id == 5:
-
-            self.serial.write((str(angledata+5000) + '\n').encode())
-        elif id == 6:
-
-            self.serial.write((str(angledata+6000) + '\n').encode())
-        elif id == 7:
-
-            self.serial.write((str(angledata+7000) + '\n').encode())
-
-    def gripper_iman(self, val):
-        if val == 1:
-            # close gripper
-            self.write_servo(5, 1)
-        else:
-            # release gripper
-            self.write_servo(5, 0)
-
-    def eff_gripper(self, val):
-        # write gripper-servo value
-        self.write_servo(4, val)
+    # Send a command to the Arduino
+    def send_command(self, cmd_vel=[90,90,90]):
+        # Match case structure to send the right command to arduino
+        pos= str(int(cmd_vel[0])).zfill(3) + str(int(cmd_vel[1])).zfill(3) + str(int(cmd_vel[2])).zfill(3)
+        
+        # Get the function from switcher dictionary
+        func = 'MOVEAX' + pos + '\n'
+        # Execute the function
+        self.serial.write(func.encode())
 
     def home(self):
-        self.write_servo(1, 45)
-        time.sleep(0.1)
-        self.write_servo(2, 90)
-        time.sleep(0.1)
-        self.write_servo(3, 90)
-        time.sleep(0.1)
-        self.gripper_iman(False)
+        self.send_command([90,90,90])
